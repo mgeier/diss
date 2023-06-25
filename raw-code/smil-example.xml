@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE smil PUBLIC "-//W3C//DTD SMIL 2.0//EN"
+                      "http://www.w3.org/2001/SMIL20/SMIL20.dtd">
+<smil xmlns="http://www.w3.org/2001/SMIL20/Language">
+  <head>
+    <meta name="title" content="Example Slideshow"/>
+    <layout>
+      <root-layout width="240" height="270"/>
+      <region id="background" left="0" width="240" top="0" height="270"/>
+      <region id="images" left="18" width="220" top="6" height="240"/>
+      <region id="captions" left="19" width="220" top="184" height="85"/>
+    </layout>
+  </head>
+  <body>
+    <par>
+      <audio src="background-music.mp3" systemComponent="multiChannelAudio"/>
+      <seq>
+        <par dur="8s">
+          <img region="images" dur="8s" src="title.png"/>
+          <audio begin="1.2s" src="title-sound.mp3"/>
+        </par>
+        <par>
+          <img region="images" dur="5s" src="image01.png"/>
+          <text region="captions" dur="5s" src="caption01.txt"/>
+        </par>
+        <par>
+          <img region="images" dur="5s" src="image02.png"/>
+          <audio begin="2s" src="sound-effect02.mp3"/>
+        </par>
+        <!-- some slides omitted for brevity -->
+        <par>
+          <img region="images" dur="5s" src="image74.png"/>
+          <text region="captions" dur="5s" src="caption74.txt"/>
+        </par>
+      </seq>
+      <img region="background" src="background.png" width="240" height="270"/>
+    </par>
+  </body>
+</smil>

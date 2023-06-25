@@ -1,0 +1,3 @@
+-r sphinx-asdf/asdf/doc/requirements.txt
+-r sphinx-splines/splines/doc/requirements.txt
+-e sphinx-splines/splines

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.0//EN">
+<X3D profile="Immersive" version="3.0">
+  <Scene>
+    <Viewpoint position="0 0 4"/>
+    <TimeSensor DEF="Time01" cycleInterval="5" loop="true"/>
+    <PositionInterpolator DEF="PosInterp01"
+      key="0 0.08 0.16 0.24 0.32 0.4 0.48 0.56 0.64 0.72 0.8 0.88 0.96"
+      keyValue="0 0 0  -2 0 0  0 0 0  2 0 0
+                0 0 0  0 -2 0  0 0 0  0 2 0
+                0 0 0  0 0 -2  0 0 0  0 0 2  0 0 0"/>
+    <Transform DEF="Transform01" rotation="0 1 0 1.57">
+      <Sound>
+        <AudioClip loop="true" url="chimes.wav" />
+      </Sound>
+    </Transform>
+    <ROUTE fromNode="Time01" fromField="fraction_changed"
+           toNode="PosInterp01" toField="set_fraction"/>
+    <ROUTE fromNode="PosInterp01" fromField="value_changed"
+           toNode="Transform01" toField="set_translation"/>
+  </Scene>
+</X3D>

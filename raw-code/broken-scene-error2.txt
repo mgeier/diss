@@ -1,0 +1,9 @@
+Error: Too many <channel> elements: file has only 1 channel(s)
+---
+<asdf version="0.4">
+  <clip file="mono-recording.ogg">
+    <channel pos="-1.5 3" />
+    <channel pos="1.5 3" />
+  </clip>
+    ^^^^
+---

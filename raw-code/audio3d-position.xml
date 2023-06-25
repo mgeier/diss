@@ -1,0 +1,9 @@
+<Source position="-5 0 1" startTime="0" minDistance="0.4" maxDistance="100">
+  <Animation startTime="0" loop="true" attribute="position">
+    <VectorKey value="0 5 1" time="5000"/>
+    <VectorKey value="5 0 1" time="10000"/>
+    <VectorKey value="0 -5 1" time="15000"/>
+    <VectorKey value="-5 0 1" time="20000"/>
+  </Animation>
+  <Sound input="FILE" loading="STATIC" location="loop1.wav" loop="true"/>
+</Source>

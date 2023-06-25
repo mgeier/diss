@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<spatdif version="0.3">
+  <meta>
+    <ordering>time</ordering>
+    <media>
+      <id>1</id>
+      <type>file</type>
+      <location>../audio/hello.wav</location>
+    </media>
+  </meta>
+  <time>0.0</time>
+  <source>
+    <name>1</name>
+    <position>0.0 5.0 0.0</position>
+    <media id="1">
+      <gain>1.0</gain>
+      <loop>
+        <type>repeat</type>
+      </loop>
+    </media>
+  </source>
+  <time>0.0087944</time>
+  <source>
+    <name>1</name>
+    <position>0.174 4.996 0.0</position>
+  </source>
+  <time>0.0176514</time>
+  <source>
+    <name>1</name>
+    <position>0.349 4.986 0.0</position>
+  </source>
+  <time>0.0265303</time>
+  <source>
+    <name>1</name>
+    <position>0.522 4.97 0.0</position>
+  </source>
+</spatdif>

@@ -1,0 +1,8 @@
+Error: Error loading audio file
+---
+<asdf version="0.4">
+  <clip file="non-existing.ogg">
+              ^^^^^^^^^^^^^^^^
+---
+error details: I/O error
+error details: No such file or directory (os error 2)

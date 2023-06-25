@@ -1,0 +1,6 @@
+/SpatDIF/*/xyz :/def right front top
+/SpatDIF/*/xyz :/units meter meter meter
+/SpatDIF/source.1/xyz -0.5 0.5 0.0
+/SpatDIF/*/aed :/def clockwise
+/SpatDIF/*/aed :/units deg deg meter
+/SpatDIF/source.2/aed -45.0 0.0 0.707

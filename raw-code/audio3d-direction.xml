@@ -1,0 +1,10 @@
+<Source position="0 0 0" minDistance="1" maxDistance="100"
+        direction="-1 0 0" insideConeAngle="40" outsideConeAngle="120">
+  <Animation attribute="direction" loop="true">
+    <VectorKey value="0 -1 0" time="5000"/>
+    <VectorKey value="1 0 0" time="10000"/>
+    <VectorKey value="0 1 0" time="15000"/>
+    <VectorKey value="-1 0 0" time="20000"/>
+  </Animation>
+  <Sound input="FILE" loading="STATIC" location="testloop.wav" loop="true"/>
+</Source>

@@ -1,0 +1,92 @@
+\chapter{Conclusion and Future Work}
+\label{sec:conclusion}
+
+The previous chapters have shown
+the definition of the Audio Scene Description Format (ASDF),
+the implementation of a library for loading ASDF files
+and its integration into different software for spatial audio reproduction.
+All involved programs and libraries are available as open-source software
+and for free.
+Everyone can use the ASDF to create spatial audio scenes
+and the ASDF library and its integrations can be used to play them back.
+The software implementation can also be used as a basis for further
+experimentation and to prototype features that are currently not implemented.
+
+There has been no systematic evaluation of the format yet,
+but everyone is encouraged to try it out and make their own judgement.
+As chapter~\ref{sec:existing-formats} has shown,
+there are currently no dedicated authoring formats
+for spatial audio scenes available.
+Therefore, no direct comparison is possible.
+From the example scenes in appendix~\ref{sec:asdf} it should be apparent
+that the ASDF syntax is more concise and easier to hand-write
+than any of the other text-based formats
+shown in chapter~\ref{sec:existing-formats}.
+The feature set of the ASDF, however,
+is very much limited compared to some of the other formats that were mentioned.
+The scope of the format is intentionally chosen to be very narrow.
+It is focused on the description of
+movements and rotation of scene objects over time.
+This description is based on different types of \emph{splines},
+which are covered in considerable depth in appendix~\ref{sec:splines}.
+Nearly everything else is out of scope,
+as section~\ref{sec:out-of-scope} describes.
+
+The implementation of the ASDF library covers all features of the format
+as currently defined,
+but of course additional functionality could be implemented.
+One example would be the recording of movements using a tracking system,
+followed by a data reduction by means of some kind of \emph{curve fitting},
+which would allow to create a high-level declarative description
+from a low-level stream of sampled data.
+
+The three-dimensional GUI prototype shown in section~\ref{sec:visualization}
+could of course be improved in many ways.
+It would be a massive endeavour,
+but maybe an application could be implemented that allows
+creating and editing trajectories graphically, including the possibility
+to animate nested local coordinate systems.
+This would also need some kind of elaborate timeline editor
+to be able to define the relationships between objects in time.
+It is unlikely that such an extensive GUI project would be started
+(and more importantly, would lead to a usable program).
+More realistically,
+some features of the ASDF could probably be improved in order to
+simplify the scene authoring process via editing plain text files.
+The ASDF has its own issue tracker\footnote{\url{%
+https://github.com/AudioSceneDescriptionFormat/asdf/issues}}
+where future features can be discussed.
+
+Appendix~\ref{sec:splines} contains a thorough write-up about Euclidean splines
+and rotation splines, but it is of course by far not exhaustive,
+and more material
+-- including more types of splines --
+can be added in the future.
+Some new findings might even lead to changes in future versions of the ASDF.
+For example,
+more and better end conditions could be brought forward,
+which could replace the end conditions that are currently used in the ASDF.
+There is still a lot of old and new literature that has not been incorporated.
+Many aspects that might be worth considering in the future
+are already mentioned in the issue tracker
+for the \emph{splines} project\footnote{\url{%
+https://github.com/AudioSceneDescriptionFormat/splines/issues}}.
+
+The ASDF allows the creation of position trajectories and of orientation
+trajectories and it can even handle a combination of both.
+However, when a scene object or a group of objects moves
+along a position trajectory, it does not automatically change its orientation
+according to the curvature of the trajectory.
+This is a feature that might be desirable for scene authors.
+
+The splines that are currently used in the ASDF
+guarantee a continuous change of velocity between spline segments,
+but the acceleration vector
+-- \ie the second derivative --
+is allowed to be discontinuous.
+It might be interesting to investigate whether
+choosing a different type of spline that guarantees continuity of acceleration
+will have any noticeable advantages.
+
+Since all the specifications, software and documentation is publicly available,
+it should be easy for anyone who is interested to build upon this work.

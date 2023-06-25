@@ -1,0 +1,417 @@
+\RequirePackage{luatex85}
+\documentclass[
+version=3.28,  % KOMA-Script version
+a4paper,
+11pt,
+twoside,
+openright,
+cleardoublepage=empty,
+%headsepline,
+%bibliography=totoc,  % don't use! This is managed by biblatex!
+BCOR=10mm,
+%DIV=calc,
+%DIV=classic,
+DIV=12,
+%tablecaptionabove,
+%headinclude=false, % makes the upper margin a bit smaller
+footinclude=false,
+chapterprefix,
+appendixprefix,
+%numbers=noenddot,
+%draft,
+final,
+%noonelinecaption,
+%abstracton,
+%pointlessnumbers, % when using \appendix, points appear mysteriously
+%usegeometry=true,% make typearea play well with geometry
+]{scrbook}
+
+\includeonly{
+intro,
+history,
+existing-formats,
+format-development,
+format-implementation,
+conclusion,
+sphinx-asdf,
+sphinx-splines,
+}
+
+\title{Describing Three-Dimensional Movements in an Audio Scene Authoring Format}
+\author{Matthias Geier}
+\date{Juni 2023}
+
+\usepackage{colorprofiles}
+\usepackage[a-2u,mathxmp]{pdfx}
+
+%\usepackage{showkeys}
+
+\usepackage{scrhack}
+
+% for getting smaller margins in the appendix with \newgeometry:
+%\usepackage{geometry}
+
+% Load Sphinx stuff first, some things will be changed further down
+
+\ifdefined\pdfimageresolution \pdfimageresolution= 96\relax\fi
+
+\catcode`^^^^00a0\active\protected\def^^^^00a0{\leavevmode\nobreak\ }
+
+\usepackage[booktabs]{sphinx}
+\sphinxsetup{
+%verbatimwrapslines=false,
+%verbatimhintsturnover=false,
+div.note_border-TeXcolor={HTML}{E0E0E0},
+div.note_border-width=0.5pt,
+div.note_box-decoration-break=slice,
+div.warning_border-TeXcolor={HTML}{E0E0E0},
+div.warning_border-width=1.5pt,
+div.warning_background-TeXcolor={HTML}{FBFBFB},
+div.warning_box-decoration-break=slice,
+div.topic_box-shadow=none,
+div.topic_border-TeXcolor={HTML}{E0E0E0},
+div.topic_border-width=0.5pt,
+div.topic_box-decoration-break=slice,
+}
+\fvset{fontsize=\small}% Jupyter code size
+
+\usepackage{nbsphinx}
+
+\usepackage{fancyhdr}% This is used by Sphinx anyway
+\pagestyle{fancy}
+\fancyhead[LE,RO]{\thepage}
+\fancyhead[RE]{\textsl{\nouppercase{\leftmark}}}
+\fancyhead[LO]{\textsl{\nouppercase{\rightmark}}}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\fancypagestyle{plain}{\fancyhf{}}
+
+% Restoring the default that has been overwritten by Sphinx.
+% \setparsizes is recommended by KOMA-Script instead of \parindent and \parskip:
+\setparsizes{1em}{0pt plus 1pt}{0pt plus 1fil}
+
+% This is *not* recommended by the KOMA-Script docs, but I want a smaller bottom margin:
+\addtolength{\textheight}{2cm}
+
+\usepackage{polyglossia}
+\setmainlanguage{english}
+\setotherlanguage{german}
+
+\usepackage{fontspec}
+\usepackage{mathpazo}
+\linespread{1.05}  % see http://www.tug.dk/FontCatalogue/urwpalladio/
+\setmainfont{TeX Gyre Pagella}[Numbers=OldStyle]
+\setmonofont{Latin Modern Mono Light}[Numbers=Lining]
+
+% don't use \sffamily:
+\setkomafont{disposition}{\normalcolor\bfseries}
+\setkomafont{descriptionlabel}{\bfseries}
+
+% no "inline" paragraph headings
+\RedeclareSectionCommand[
+beforeskip=-10pt,
+afterskip=1sp,
+]{paragraph}
+
+% remove indentation form subparagraph
+\RedeclareSectionCommand[
+%runin=true,
+%afterskip=1em,
+indent=0pt,
+]{subparagraph}
+
+% bold math
+\usepackage{bm}
+\usepackage{mathrsfs}  % for \mathscr{}
+
+%%% suppress widows and orphans
+\widowpenalty=10000
+\clubpenalty=10000
+\displaywidowpenalty=10000 % before and after display-math
+
+%\KOMAoption{DIV}{current}  % re-calculate after specifying main font
+
+\usepackage{tikz}
+\usetikzlibrary{
+bending,
+%calc,
+chains,
+graphs,
+positioning,
+quotes,
+shapes.geometric,
+shapes.symbols,
+shapes.misc,
+arrows.meta,
+shadows,
+}
+
+\tikzset{
+%minimum height=2em,
+node distance=1em,
+outer sep=auto,
+every node/.style={align=center},
+terminal/.style={rounded rectangle, draw},
+process/.style={rectangle, draw},
+document/.style={tape, tape bend top=none, draw},
+database/.style={cylinder, shape border rotate=90, aspect=0.15, draw},
+multiple/.style={double copy shadow, fill=white},
+>=Stealth[bend],
+shorten >=1pt,
+}
+\tikzgraphsset{
+grow right sep,
+%branch down sep,
+nodes=draw,
+}
+
+% see https://tex.stackexchange.com/a/609248/
+\tikzset{execute at end node=\strut}
+\makeatletter
+\def\tikz@align@newline{\strut\pgfutil@protect\tikz@align@newline@}
+\makeatother
+
+% bigger integral and summation signs for fonts 11pt and 12pt
+\usepackage{exscale}
+
+\usepackage[titletoc,toc]{appendix}
+% workaround to get a slightly bigger space before appendices in toc
+\renewcommand{\appendixtocname}{\mbox{}\vfill\mbox{}}
+\noappendicestocpagenum
+
+\usepackage{fancyref} % cool references (\fref and \Fref)
+% uses varioref internally
+
+\newcommand{\ie}{i.\,e.\ }
+\newcommand{\eg}{e.\,g.\ }
+
+\usepackage[intlimits]{amsmath}
+%% intlimits: integral range above and below
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{nicefrac}
+
+% the package "caption2" is obsolete!
+
+\addtokomafont{caption}{\small\itshape}
+\addtokomafont{captionlabel}{\bfseries}
+\setcapindent{0pt}
+\setlength{\abovecaptionskip}{0pt}
+\setlength{\belowcaptionskip}{0pt}
+\setcapwidth{.9\textwidth}
+
+%\counterwithin{figure}{chapter}
+%\renewcommand{\thefigure}{\arabic{chapter}.\arabic{figure}}
+
+\usepackage{siunitx}
+
+\newcommand{\code}[1]{\texttt{#1}}
+
+\usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{
+pdfencoding=unicode,
+pdfpagemode=UseNone,
+pdfstartview=FitH,
+breaklinks=true,
+bookmarks=true,
+% appendices are uppercase for the pdf chapters and lowercase (sc) in the
+% document. see beginning of appendix.
+bookmarksnumbered=true,
+%bookmarksdepth=5,
+%hyperindex=false,
+bookmarksopen=false,
+hidelinks,
+%colorlinks,
+%linkcolor=,citecolor=,urlcolor=,
+pdfsubject={audio scene description},
+pdfkeywords={ASDF, SSR},
+}
+\pdfcompresslevel=9
+% Fix anchor placement for figure captions (must be loaded after hyperref)
+\usepackage{hypcap}
+
+\usepackage{csquotes}  % recommended by biblatex
+\usepackage[
+backend=biber,
+style=authoryear-comp,
+]{biblatex}  % see biblatex.cfg for further options
+
+\addbibresource{Geier_Diss.bib}
+\addbibresource{sphinx-splines/splines/doc/references.bib}
+%\DeclareDelimFormat{nameyeardelim}{\addcomma\space}
+
+\newcommand*{\mychapterformat}[1]{%
+\hfill\chapappifchapterprefix{\ }\raisebox{-.4\baselineskip}[0pt][0pt]{%
+\scalebox{4}{\rmfamily#1\thechapter\autodot}}%
+%\setlength{\baselineskip}{0pt}%
+\\[-.7\baselineskip]%
+%\vspace{.3\baselineskip}%
+\textcolor{white}{\rule{\textwidth}{.5mm}}\\[-\baselineskip]%
+\vspace{2mm}
+\textcolor{white}{\rule{\textwidth}{.5mm}}\\[-\baselineskip]%
+\vspace{2mm}
+\textcolor{white}{\rule{\textwidth}{.5mm}}%
+}
+\renewcommand*{\chapterformat}{\mychapterformat{\itshape}}
+\usepackage{relsize} % for the \relsize command
+\newcommand{\SecNumFont}{\mdseries\rmfamily\scshape\relsize{1.5}}
+\renewcommand*{\othersectionlevelsformat}[1]{%
+  \SecNumFont\csname the#1\endcsname\autodot\enskip}
+%\newcommand{\mynumberline}{}
+%\let\mynumberline\numberline
+%\renewcommand{\numberline}[1]{\mynumberline{\SecNumFont#1}}
+%% pagenumber of chapters in TOC
+%\newcommand{\mycontentsline}{}
+%\let\mycontentsline\contentsline
+%\renewcommand{\contentsline}[3]{\mycontentsline{#1}{#2}{\rmfamily#3}}
+
+\setcounter{tocdepth}{4}
+\setcounter{secnumdepth}{4}
+
+\addtokomafont{chapter}{\let\raggedsection\raggedleft}
+
+\hyphenation{
+Be-schrei-bung
+Au-dio-BIFS
+allow
+allows
+param-e-ter-i-za-tion
+co-ordi-nates
+}
+
+
+\begin{document}
+
+\makeatletter
+\let\thetitle\@title
+\let\theauthor\@author
+\let\thedate\@date
+\makeatother
+
+\begin{titlepage}
+  \begin{center}
+    \vspace*{\fill}
+    \textbf{\huge\thetitle}
+    \vfill
+    \normalsize
+
+
+\begin{german}
+Dissertation\\
+zur Erlangung des akademischen Grades\\
+Doktor-Ingenieur (Dr.-Ing.),\\
+der Fakultät für Informatik und Elektrotechnik\\
+der Universität Rostock\\
+vorgelegt von\\
+\theauthor, geb. am 12.\,Feb.\,1979 in Salzburg.
+\end{german}
+  \end{center}
+    \vfill
+\begin{german}
+Rostock, \thedate
+\end{german}
+\end{titlepage}
+
+\frontmatter
+
+\cleardoubleoddpage
+\vspace*{\fill}
+\thispagestyle{empty}
+{ \renewcommand*{\raggedsection}{\centering}
+
+\addsec*{\abstractname}
+\input{abstract-english}
+\vfill
+\begin{german}
+\addsec*{\abstractname}
+\input{abstract-german}
+\end{german}
+} % end of raggedsection == centering
+\vfill
+\cleardoubleoddpage
+
+\tableofcontents
+
+\mainmatter
+
+\include{intro}
+
+\include{history}
+
+\include{existing-formats}
+
+\include{format-development}
+
+\include{format-implementation}
+
+\include{conclusion}
+
+\begin{appendices}
+\renewcommand{\thechapter}{%
+\texorpdfstring{\textsc{\alph{chapter}}}{\Alph{chapter}}}
+\renewcommand*{\chapterformat}{\mychapterformat{\mdseries}}
+
+%% headsep=4mm,headheight=6mm
+%\newgeometry{inner=25mm,outer=20mm,top=25mm,bottom=15mm}
+%% NB: BCOR from the main document is *not* taken into account
+%% re-calculate header width
+%\fancyhfoffset{0pt}
+
+% This corresponds to parskip=half, see https://tex.stackexchange.com/a/522765/:
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{.5\baselineskip plus .5\baselineskip}
+\setlength{\parfillskip}{1em plus 1fil}
+
+\cleardoubleoddpage
+\thispagestyle{empty}
+\mbox{}
+\vfill
+\markboth{}{}%
+{\centering
+ \normalfont
+ \Huge \bfseries \sffamily \appendixpagename\par}%
+\vfill
+
+\clearpage
+\thispagestyle{empty}
+\mbox{}
+\vfill
+\centerline{\tiny This page intentionally left blank.}
+\citeurl{schuetz2010shotcrete}
+\vfill
+\vfill
+\vfill
+\clearpage
+
+\include{sphinx-asdf}
+
+\include{sphinx-splines}
+
+\end{appendices}
+
+\backmatter
+
+\printbibliography[title=References,heading=bibintoc]
+
+\newpage
+
+\begin{german}
+\chapter*{Selbständigkeitserklärung}
+
+Ich versichere, dass ich diese Dissertation
+selbständig und ohne fremde Hilfe verfasst,
+andere als die von mir angegebenen Quellen
+und Hilfsmittel nicht benutzt und
+die den benutzten Werken wörtlich oder inhaltlich entnommenen Stellen
+als solche kenntlich gemacht habe.
+
+\vskip4\baselineskip
+
+\noindent
+\theauthor\\
+Rostock, Juni 2023
+
+\end{german}
+
+\end{document}

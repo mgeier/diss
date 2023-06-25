@@ -1,0 +1,6 @@
+[submodule "sphinx-asdf/asdf"]
+	path = sphinx-asdf/asdf
+	url = https://github.com/AudioSceneDescriptionFormat/asdf.git
+[submodule "sphinx-splines/splines"]
+	path = sphinx-splines/splines
+	url = https://github.com/AudioSceneDescriptionFormat/splines.git

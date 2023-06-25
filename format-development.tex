@@ -1,0 +1,345 @@
+\chapter{Development of a Scene Authoring Format: ASDF}
+\label{sec:format-development}
+
+As part of this thesis,
+the Audio Scene Description Format (ASDF) has been developed.
+The first ideas for this format have already been presented by
+\textcite{geier2008asdf-daga,geier2008asdf}.
+One of the goals was -- and still is --
+to define a single common scene description format
+that could be used for any number of different reproduction methods
+to be able to conveniently compare them.
+For an overview of some of those reproduction methods
+and the emergence of \emph{object-based} audio reproduction
+see the end of chapter~\ref{sec:history}.
+To ensure the smooth exchange of scenes between different reproduction systems,
+the ASDF is independent of the rendering algorithm
+and contains no implementation-specific or platform-specific data.
+Scenes can be played back on both loudspeaker-based and headphone-based systems.
+Another goal was to provide a reasonably simple means for everyone
+to create three-dimensional spatial audio scenes and experiment with them.
+This is facilitated by the ASDF library implementation described in
+chapter~\ref{sec:implementation}
+and especially by the software integrations described in
+sections~\ref{sec:integration-ssr}
+and~\ref{sec:integration-pd}.
+
+\textcite{geier2010future} state that
+``the ASDF aims at being both an authoring and a storage format at the
+same time. In absence of a dedicated editing application, scene authors should
+still be able to create and edit audio scenes with their favorite text editor.''
+This is still true,
+but recently the focus has shifted even more towards authoring.
+It is easy to create a lower-level representation from a high-level description,
+but it is much harder -- and often lossy -- to go into the other direction.
+The main focus of the ASDF is to be able to define elaborate sound source trajectories
+by specifying only a few points in three-dimensional space.
+Not only does this need less storage space than densely sampled movement data,
+it is also much easier to edit existing trajectories.
+
+The exact syntax of the examples in the
+aforementioned primordial
+papers is slightly different,
+but most of the basic ideas are already there.
+The full documentation -- including many examples --
+for the current version of the ASDF
+is available in appendix~\ref{sec:asdf}.
+The ASDF in its current form is focused on describing three-dimensional
+movements -- including rotations --
+to allow experimenting with complex trajectories.
+Detailed background about the underlying research into various
+types of splines can be found in appendix~\ref{sec:splines}.
+All other features are deliberately minimalistic.
+For this thesis,
+the choice was made to concentrate mainly on one topic -- movement over time --
+and thoroughly investigate position and rotation splines in considerable depth,
+instead of developing a fully-featured scene description format
+where each feature receives only a superficial treatment.
+
+Section~\ref{sec:out-of-scope} shows an incomplete list of missing features
+that may or may not be implemented in future versions of the format.
+The goal was not to come up with as many features as possible,
+but to define a few basic features and make a working implementation
+to be able to thoroughly assess their utility.
+\textcite{geier2010future} promise that
+"a reference implementation will be provided in form of a software library."
+This library is now finally available,
+and it is described in chapter~\ref{sec:implementation}.
+
+The analysis of existing formats in chapter~\ref{sec:existing-formats}
+has shown that most of them use linear interpolation
+between the given object positions.
+A few formats allow specifying (cubic) splines,
+but they are complicated to define and hard to use without a separate
+editor application.
+Control over the speed of objects along trajectories is limited.
+Interpolation between different orientations of objects and groups of objects
+is rarely possible at all,
+and if it is,
+often only spherical linear interpolation (see section~\ref{rotation/slerp::doc} in the appendix)
+is supported.
+Only the X3D format (see \ref{sec:X3D})
+supports smooth interpolation of orientations,
+but there is still room for improvements.
+
+The ASDF uses splines to provide trajectories that can be defined by a simple
+sequence of points in space.
+Optionally, the time of the given points can be specified,
+which in turn influences the speed along the trajectory.
+The same approach as for position splines is also used for orientation splines.
+Both position and orientation values can be combined in so-called
+\emph{transforms} (see section~\ref{sec:development-transforms}).
+
+
+\section{Storage Format and Syntax}
+
+Since the ASDF is designed to be an authoring format,
+it is an obvious choice to use text-based files to store scene descriptions.
+This way, it is possible to create and edit scenes with any text editor,
+without the need for specialized software.
+This does not include audio data, though.
+Audio signals are stored in separate files using common binary audio
+formats and they are linked
+to the text-based scene description
+via their file name.
+The audio files still have to be recorded and edited with specialized software,
+but audio editing applications are widely available.
+
+Originally, the ASDF was planned to become
+an extension to the SMIL format
+\parencite{geier2010future,geier2010object-based},
+which was presented in section~\ref{sec:SMIL}.
+This way, it would be possible to use an existing SMIL library
+to get the timing and media management for free
+and only implement the 3D audio aspects.
+Sadly, the SMIL format didn't stand the test of time and
+nowadays it is not really used anymore and no usable libraries are available.
+Instead, the ASDF was developed as a new format from scratch.
+Staying in the tradition of SMIL,
+XML\footnote{\url{https://www.w3.org/TR/xml/}} was chosen as a storage format,
+because it lends itself to representing the potentially deeply nested containers
+of the time graph.
+In recent years, XML-based formats have lost a lot of popularity,
+often being replaced by more modern text-based formats like
+JSON\footnote{\url{https://www.json.org/}} or
+YAML\footnote{\url{https://yaml.org/spec/1.2/}}.
+However, XML is still uniquely suited to represent nested containers,
+each of which carrying additional information in form of attributes.
+
+For a description of the entire syntax of the ASDF see appendix~\ref{sec:asdf}.
+
+
+\section{Transforms}
+\label{sec:development-transforms}
+
+The focus of this thesis is the movement of sources (and the virtual listener)
+in three-dimensional audio scenes.
+In the ASDF, this movement can be described by means of transforms.
+Apart from movement -- comprised of translation and rotation of objects --
+transforms can also be used to control the volume of the source signals.
+Transforms can be static, but -- more interestingly --
+they can also change over time.
+When defining a transform with a sequence of positions,
+a \emph{spline}\footnote{%
+For a definition of the term \emph{spline}
+see section~\ref{euclidean/splines::doc} in the appendix.}
+is created, which is used to smoothly animate the object position over time.
+Similarly, splines can be created for orientations
+and even for volume changes over time.
+The coordinate system conventions of ASDF are explained
+in section~\ref{position-orientation::doc}
+of the appendix,
+the syntax for defining transforms is shown in section~\ref{transform::doc}
+and more details about the splines used in the ASDF
+can be found in section~\ref{splines:asdf-splines}.
+
+All positions and orientations are generally three-dimensional.
+However, in simple cases where movements are limited to the horizontal plane,
+positions can be specified as two-dimensional coordinates and
+rotations can be defined by simple azimuth angles.
+The goal is to make it simple to create simple movements,
+while still making it possible to create arbitrarily complicated ones.
+Not only can transforms be applied to sound sources
+and to the listener position,
+but they can also be applied to other transforms.
+This way, complex movements can be achieved by combining
+multiple simpler movements.
+
+A transform can be applied to multiple objects at the same time.
+Similarly, one object can be the target of multiple transforms.
+However, this is not allowed if there is more than one rotation involved,
+since the order of rotations would be unspecified,
+which would make the resulting orientation ambiguous.
+If multiple rotations are desired,
+their order has to be explicit.
+This can be done by applying the first transform to the target object,
+then applying the second transform to the first one
+(and the third to the second and so on, if desired).
+
+Just like audio clips,
+transforms have a start and an end.
+They can be placed in the timeline relative to other transforms and audio clips,
+as explained in the following section.
+
+
+\section{Temporal Structure}
+
+Contrary to the majority of formats described
+in chapter~\ref{sec:existing-formats},
+the spatial transforms don't make up the primary structure of ASDF files.
+Instead, the timeline is the central data structure,
+which is inspired by the SMIL format (see section~\ref{sec:SMIL}).
+The timeline is defined by so-called \emph{time containers}
+in the form of \code{<seq>} and \code{<par>} elements.
+These containers can be used to play audio clips one after another
+or at the same time, respectively.
+They can also contain transforms,
+which can be placed in time relative to audio clips and to other transforms.
+Time containers can also contain other time containers
+and they can be arbitrarily nested.
+See section~\ref{seq-par::doc} in the appendix for some examples.
+
+The timing of audio clips and of the transforms that might affect their spatial
+trajectories is independent.
+A transform might only affect a part of an audio clip or a whole playlist
+of clips.
+On the other hand,
+a single audio clip might be affected by a sequence of multiple transforms.
+As mentioned in the previous section,
+transforms can be applied to other transforms,
+leading to a combined overall transform.
+However, the involved transforms can start and end at different times.
+Each transform only has an effect while it is active.
+This means that when a sound source is moved along a trajectory,
+it does not stay at the final position when the trajectory is finished.
+
+It is important that transforms can change over time,
+but sometimes only static transforms are needed.
+The ASDF provides a simplified syntax where
+transform attributes like \code{pos} or \code{rot} can be applied directly
+to audio clips, which means that those transforms are constant
+for the whole duration of the clip.
+
+
+\section{Out of Scope}
+\label{sec:out-of-scope}
+
+This thesis is mostly about describing three-dimensional movements over time,
+and this is also the focus of the ASDF.
+There are many more features that a scene description format could have
+-- and some of the formats from section~\ref{sec:existing-formats} do have.
+The following (incomplete) list presents some features that could be interesting
+but were not included in the ASDF in order to limit the scope of the project.
+Some of these features could be considered for a future version of the format.
+
+\vskip0.5\baselineskip
+
+\begin{description}
+
+\item[Graphics]
+The ASDF is meant for pure audio scenes.
+There are many applications for audiovisual scenes,
+which are typically focused on the visual part.
+A range of 3D animation software
+and game engines are available,
+many of them already have support for spatial audio,
+and if not, it can be added via plugin interfaces.
+A declarative authoring format in this area would on the one hand
+be much more complicated than an audio-only format,
+and on the other hand it would probably not provide any advantage over
+what is already available in existing software solutions.
+
+\item[Interactivity]
+Currently, the ASDF does not support any interactivity
+because deterministic scenes allow for a much simpler implementation.
+The whole scene is loaded into memory and cannot be changed during playback.
+It might be interesting to provide ``hooks'' for defining user interaction,
+as it is possible in the SMIL format (see section~\ref{sec:SMIL}), for example.
+
+However, if a lot of interactivity is desired,
+there might be more straightforward approaches
+like using existing game engines, which are centered about interactivity.
+A small amount of interactivity would probably still be useful
+for triggering different ``parts'' of an audio scene.
+For example, a spatial music composition might combine a dynamic audio scene
+with live musicians playing their instruments.
+In such a case it would be helpful to be able to synchronize the movements in
+the audio scene with the live performances.
+
+\item[Perceptual Parameters]
+In addition to physical parameters,
+some formats like MPEG-4 (see section~\ref{sec:MPEG-4})
+also support perceptual parameters like
+\emph{source presence}, \emph{source brilliance}, \emph{room presence}
+and \emph{envelopment} \parencite{vaananen2003parametrization}.
+Something like this might be added to a future ASDF version,
+but for now, it is limited to describing the physical positions of sound sources
+and the volume of their source signals.
+
+\item[Room Acoustics/Reverberation]
+The ASDF does not allow the description of
+physical or perceptual room properties.
+The lack of built-in reverberation in a scene
+can be compensated
+by adding additional sound sources
+containing pre-recorded reverb signals,
+be it artificially created or from a real recording.
+
+\item[Scene Scaling]
+It is likely that
+different reproduction venues have different room sizes.
+Sound source positions and trajectories created for a small room
+might not make sense in a large room.
+It would be useful if scenes could automatically be re-scaled
+based on the reproduction setup.
+The ASDF currently doesn't provide any tools for this,
+but some of the formats mentioned in section~\ref{sec:existing-formats}
+use relative coordinates to tackle this problem,
+and so do
+object-based cinema systems \parencite{robinson2015cinematic}.
+However, the psychoacoustic consequences of such a scaling are unclear.
+
+
+\item[Ambisonics sources]
+Ambisonics microphones can be used to make
+spatial recordings of ambient sounds.
+Those recordings can be stored as \emph{B-format} files.
+It would be useful to include such recordings
+in an object-based scene description,
+but the ASDF currently does not support that.
+
+Channel-based recordings like 5.1 files
+can be used as audio clips,
+but their virtual loudspeaker positions have to be specified manually.
+
+
+\item[Trimming Audio Clips]
+Audio clips in the ASDF can only be played to their full length.
+They cannot skip parts of the file in the beginning or in the end.
+Similarly, partial repetitions are not supported.
+It might be desirable to allow that,
+but it would make the implementation as well as the usage more complicated.
+
+\item[Multiple Listeners]
+The ASDF allows the definition of a single \emph{reference},
+\ie the position of a listener.
+This \emph{reference} can be animated with \emph{transforms}
+just like sound sources.
+However, there are other systems which support multiple listener positions
+at the same time.
+This would make it possible to ``cut'' between different listener positions
+like cutting between camera angles in a movie.
+
+\item[Streaming]
+There are two aspects of streaming that can be considered.
+On the one hand,
+source signals could be provided via audio streams from a network.
+This is not possible in the current ASDF,
+but it could be implemented reasonably easily, if desired.
+On the other hand,
+the whole scene description could be streamed,
+as it is done, for example, in MPEG-4 (see section~\ref{sec:MPEG-4}).
+This adds a lot of complexity, which arguably isn't worth the effort.
+ASDF scenes have to be parsed in their entirety before playback can start.
+
+\end{description}

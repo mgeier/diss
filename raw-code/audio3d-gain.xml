@@ -1,0 +1,9 @@
+<Source position="0 5 1.5" minDistance="1" maxDistance="100">
+  <Sound input="FILE" loading="STATIC" location="loop1.wav" gain="0" loop="true">
+    <Animation startTime="0" attribute="gain">
+      <FloatKey value="100" time="4000"/>
+      <FloatKey value="100" time="6000"/>
+      <FloatKey value="0" time="10000"/>
+    </Animation>
+  </Sound>
+</Source>

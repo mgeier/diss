@@ -1,0 +1,42 @@
+#VRML V2.0 utf8
+Viewpoint { position 23.01 16.46 8.282 }
+DEF TimeSensor01 TimeSensor {
+  cycleInterval 5 loop FALSE stopTime 1 }
+DEF Transform01 Transform {
+  translation 0.0759 0 -0.4247
+  rotation -1 0.004363 -0.004363 -1.571
+  children [
+    DEF PosInterp01 PositionInterpolator {
+      key [ 0, 0.02, ..., 1 ]
+      keyValue [ 0.0759 0 -0.4247, 0.4856 0 -2.427,
+        ..., 0.0759 0 -0.4247 ] },
+    DEF OriInterp01 OrientationInterpolator {
+      key [ 0, 0.02, ..., 1 ]
+      keyValue [ -1 0.004363 -0.004363 -1.571,
+        -0.9994 0.02502 -0.02502 -1.571,
+        ..., -1 0.004363 -0.004363 -1.571 ] },
+    Shape {
+      appearance Appearance { material Material { ... } }
+      geometry IndexedFaceSet {
+        coord Coordinate { point [ 48.67 8.484 -14.88,
+          48.67 8.484 -16.96, 48.67 7.446 -14.88, ...  ] }
+        coordIndex [ 0, 1, 2, -1, 0, 2, 3, -1, ... ] } }
+    Shape { ... }
+    Transform {
+      translation 1 2.5 -1
+      children [
+        Sound {
+          source DEF Sound01 AudioClip {
+            url "my-sound.wav" loop TRUE } } ] }
+  ]
+  ROUTE PosInterp01.value_changed TO Transform01.set_translation
+  ROUTE TimeSensor01.fraction_changed TO PosInterp01.set_fraction
+  ROUTE OriInterp01.value_changed TO Transform01.set_rotation
+  ROUTE TimeSensor01.fraction_changed TO OriInterp01.set_fraction
+}
+DEF ProxSensor01 ProximitySensor {
+  enabled TRUE center 47.01 15.92 7.43 size 2.5 2 1.8
+}
+ROUTE ProxSensor01.enterTime TO TimeSensor01.startTime
+ROUTE ProxSensor01.enterTime TO Sound01.startTime
+ROUTE ProxSensor01.exitTime TO Sound01.stopTime

@@ -1,0 +1,154 @@
+\renewcommand{\dictumwidth}{0.5\textwidth}
+\setchapterpreamble[ol][0.5\textwidth]{%
+\dictum[\cite{garity1941fantasound}]{%
+It has been found that
+by artificially causing the source of sound
+to move rapidly in space
+the result can be highly dramatic and desirable.}}
+
+\addchap{Introduction}
+
+The goal of \emph{spatial audio reproduction}
+is to create auditory events for a listener or multiple listeners,
+which are perceived as arriving from specific spatial directions.
+This can be achieved either with headphones or with arrangements
+of multiple loudspeakers.
+Such technology can be used,
+for example,
+for creating
+spatial music performances,
+audio plays
+or spatial sound tracks for movies.
+
+To set everything into perspective, chapter~\ref{sec:history}
+will give an overview about the historic development of spatial audio
+reproduction and present some old and new techniques
+for creating spatial audio experiences for an audience.
+This is also where the term \emph{channel-based} will be introduced
+to classify reproduction systems
+where each loudspeaker driving signal
+is stored and distributed in its own separate channel.
+This will be contrasted with
+the term \emph{object-based},
+which represents a whole new reproduction paradigm.
+Instead of delivering an \emph{audio mix} which is tied to a fixed loudspeaker
+setup (or to two headphone channels),
+a so-called \emph{audio scene} comprised of individual sound sources is
+created which holds all source signals as well as additional data like source
+positions and other scene parameters.
+Based on such an audio scene,
+the loudspeaker or headphone signals are generated in real time
+for any given reproduction setup.
+
+Chapter~\ref{sec:existing-formats}
+will describe some existing file formats to store object-based
+audio scenes.
+The main focus will be on the handling of three-dimensional movements
+of scene objects.
+Most of those formats were not explicitly designed for authoring,
+and even though many formats are text-based,
+their syntaxes make it unnecessarily hard to author scenes by hand.
+Most formats do not provide any
+high-level \emph{declarative}\footnote{%
+For an explanation of the term \emph{declarative} see
+section~\ref{sec:declarative-procedural-sampled}.}
+syntax for the description of smooth movements.
+
+The Audio Scene Description Format (ASDF)
+-- a new authoring format for object-based audio scenes --
+will be presented in chapter~\ref{sec:format-development}.
+Instead of using spatial relationships as the main structural element,
+it uses temporal relationships.
+Elements of a scene can happen in parallel or in sequence.
+By nesting so-called \emph{time containers},
+arbitrary time relationships can be defined.
+Both audio clips and the \emph{transforms} that control their spatial
+positions and movements
+are part of the same timeline.
+Spatial relations are still very important,
+but they are not defined by the top-level file structure.
+Instead, spatial relationships have to be explicitly established
+by referencing other scene objects or transforms via their IDs.
+
+A detailed description of all features of the ASDF
+is available in appendix~\ref{sec:asdf},
+which also includes a lot of small examples.
+The \emph{declarative}
+definition of movements of objects in a scene
+-- including the rotation of objects and groups of objects --
+is based on \emph{splines}.
+An extensive review of all the relevant types of splines
+is provided in appendix~\ref{sec:splines}.
+The appendices are an integral part of this thesis
+and they should not be overlooked.
+The reason why those two appendices are not part of the main text
+is that they are actually self-contained projects,
+which are separately available online.
+Furthermore,
+they are meant to evolve beyond being used as part of this thesis.
+Appendix~\ref{sec:splines} not only illustrates
+the properties of all the types of splines used in the ASDF,
+but it also provides tools for investigating further types
+and maybe developing new types.
+It thoroughly derives the fundamentals of interpolatory polynomial splines
+in Euclidean space and it applies the same methods
+-- as far as possible -- to rotation splines.
+Three-dimensional rotation splines are notoriously hard to visualize
+and since this thesis is printed on paper,
+only sequences of snapshots of rotations can be shown.
+However,
+in the online
+HTML version\footnote{\url{https://splines.readthedocs.io/}},
+a number of animations are available that can much better
+illustrate the behavior of subtly different rotation splines.
+
+It is an important goal of this thesis
+to not only define a theoretical file format on paper,
+but also to enable its practical usage
+in order to be able to properly evaluate its capabilities and weaknesses.
+Therefore, an open-source software library has been implemented,
+which is described in chapter~\ref{sec:implementation}.
+This library has also been integrated in a stand-alone
+software for spatial audio reproduction,
+which means that the ASDF is ready to be tried out by anyone who is interested.
+
+
+\addsec{Acknowledgements}
+
+I would like to thank Sebastian Möller,
+head of the Quality and Usability (QU) Lab,
+Technische Universität Berlin\footnote{\url{https://www.tu.berlin/qu/}},
+for taking me in as a PhD student
+and for giving me all the support I could wish for
+during the time I worked there.
+I am indebted to Sascha Spors,
+at the time head of the spatial audio group at QU Lab and later professor
+at the Institute of Communications Engineering at Universität
+Rostock\footnote{\url{https://www.int.uni-rostock.de/}}
+for acting as my thesis advisor since the beginning
+and for his support over all those years.
+Thanks to Jens Ahrens
+for introducing me to the QU Lab in the first place
+and for his continuous collaboration on the \emph{SoundScape Renderer}
+which now serves as a proving ground for the ASDF.
+Thanks to all my colleagues at QU Lab in Berlin
+and at the Institute of Communications Engineering in Rostock
+for many fruitful discussions
+and for contributing to a great working experience.
+I would like to thank Jürgen Herre
+for helping me find the motivation to finally finish this thesis.
+A big thank you goes to
+Tracy Harris for proofreading the whole text including the appendices.
+Thanks to Mikhail Korotiaev for several suggestions
+for improvements in appendix~\ref{sec:splines}.
+Finally, I would like to thank all the
+maintainers and contributors of the many open-source software projects
+that were used for creating this thesis and the associated software and
+documentation: \LaTeX, Sphinx, Jupyter, Matplotlib, NumPy, SymPy,
+Python and Rust, just to name a few.
+Specifically, I would like to thank
+Jean-François B.\footnote{\url{https://github.com/jfbu}}
+for his work on the \LaTeX\ output of
+\emph{nbsphinx}\footnote{\url{https://nbsphinx.readthedocs.io/}},
+without which the Jupyter code cells in the appendix would look much
+less pleasing.

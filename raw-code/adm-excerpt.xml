@@ -1,0 +1,17 @@
+<audioChannelFormat typeDefinition="Objects">
+  <audioBlockFormat rtime="00:00:00.00000" duration="00:00:05.00000">
+    <position coordinate="azimuth">-22.5</position>
+    <position coordinate="elevation">5.0</position>
+    <position coordinate="distance">1.0</position>
+  </audioBlockFormat>
+  <audioBlockFormat rtime="00:00:05.00000" duration="00:00:10.00000">
+    <position coordinate="azimuth">-24.5</position>
+    <position coordinate="elevation">6.0</position>
+    <position coordinate="distance">0.9</position>
+  </audioBlockFormat>
+  <audioBlockFormat rtime="00:00:15.00000" duration="00:00:20.00000">
+    <position coordinate="azimuth">-26.5</position>
+    <position coordinate="elevation">7.0</position>
+    <position coordinate="distance">0.8</position>
+  </audioBlockFormat>
+</audioChannelFormat>
