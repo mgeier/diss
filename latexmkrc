@@ -1,4 +1,4 @@
-@default_files = ('Geier_Diss');
+@default_files = ('geier_dissertation_2024');
 
 #$pdf_mode = 1;  # $pdflatex
 #$pdf_mode = 3;  # $dvipdf

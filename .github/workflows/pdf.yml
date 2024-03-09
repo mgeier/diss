@@ -26,10 +26,10 @@ jobs:
           # Sphinx is needed for pygmentize.py
           pre_compile: |
             python -m pip install sphinx
-          root_file: Geier_Diss.tex
+          root_file: geier_dissertation_2024.tex
           latexmk_use_lualatex: true
       - name: Upload PDF
         uses: actions/upload-artifact@v3
         with:
           name: PDF
-          path: Geier_Diss.pdf
+          path: geier_dissertation_2024.pdf
