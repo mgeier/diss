@@ -22,10 +22,8 @@ jobs:
           ./build-sphinx.sh
       - uses: xu-cheng/latex-action@v2
         with:
-          extra_system_packages: py3-pip
           # Sphinx is needed for pygmentize.py
-          pre_compile: |
-            python -m pip install sphinx
+          extra_system_packages: py3-sphinx
           root_file: geier_dissertation_2024.tex
           latexmk_use_lualatex: true
       - name: Upload PDF
