@@ -1,3 +1,4 @@
+\DocumentMetadata{pdfstandard=A-2u}
 \RequirePackage{luatex85}
 \documentclass[
 version=3.28,  % KOMA-Script version
@@ -31,7 +32,6 @@ final,
 \date{Juni 2023}
 
 \usepackage{colorprofiles}
-\usepackage[a-2u,mathxmp]{pdfx}
 
 %\usepackage{showkeys}
 
@@ -86,10 +86,18 @@ div.topic_box-decoration-break=slice,
 \setmainlanguage{english}
 \setotherlanguage{german}
 
-\usepackage{fontspec}
-\usepackage{mathpazo}
-\linespread{1.05}  % see http://www.tug.dk/FontCatalogue/urwpalladio/
-\setmainfont{TeX Gyre Pagella}[Numbers=OldStyle]
+% Must be loaded before unicode-math!
+\usepackage[intlimits]{amsmath}
+%% intlimits: integral range above and below
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{nicefrac}
+
+\usepackage{unicode-math}
+\defaultfontfeatures{Scale=MatchLowercase}
+\setmainfont{TeX Gyre Pagella}[Numbers = OldStyle, Scale = 1.0]
+\setmathfont{Asana Math}
+%\setmathfont{TeX Gyre Pagella Math}
 \setmonofont{Latin Modern Mono Light}[Numbers=Lining]
 
 % don't use \sffamily:
@@ -110,7 +118,11 @@ indent=0pt,
 ]{subparagraph}
 
 % bold math
-\usepackage{bm}
+%\usepackage{bm}
+% "bm" is not supported with "unicode-math",
+% see https://github.com/latex3/unicode-math/issues/108
+% NB: this makes "dot", "tilde" etc. non-bold:
+\let\boldsymbol\symbfit
 \usepackage{mathrsfs}  % for \mathscr{}
 
 %%% suppress widows and orphans
@@ -174,12 +186,6 @@ nodes=draw,
 \newcommand{\ie}{i.\,e.\ }
 \newcommand{\eg}{e.\,g.\ }
 
-\usepackage[intlimits]{amsmath}
-%% intlimits: integral range above and below
-\usepackage{amssymb}
-\usepackage{amstext}
-\usepackage{nicefrac}
-
 % the package "caption2" is obsolete!
 
 \addtokomafont{caption}{\small\itshape}
@@ -213,9 +219,15 @@ bookmarksopen=false,
 hidelinks,
 %colorlinks,
 %linkcolor=,citecolor=,urlcolor=,
-pdfsubject={audio scene description},
-pdfkeywords={ASDF, SSR},
+pdfsubject={dissertation},
+%pdfusetitle, % https://github.com/latex3/pdfresources/issues/64
 }
+\makeatletter
+\hypersetup{
+pdfauthor=\@author,
+pdftitle=\@title,
+}
+\makeatother
 \pdfcompresslevel=9
 % Fix anchor placement for figure captions (must be loaded after hyperref)
 \usepackage{hypcap}
