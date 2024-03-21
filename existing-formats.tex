@@ -473,14 +473,14 @@ In the other publications, this opcode is not even mentioned at all.
 \label{sec:adm}
 
 The ADM is an audio scene description format
-defined in ITU-R recommendation
+defined by ITU-R in Recommendation
 BS.2076\footnote{\url{https://www.itu.int/rec/R-REC-BS.2076/}}.
 Its latest edition BS.2076-2 was published in 2019.
 
 The ADM is an XML-based format
 that's typically embedded
 in the \texttt{<axml>} chunk of Broadcast Wave Format (BWF)
-files, as specified in ITU-R recommendation
+files, as specified by ITU-R in Recommendation
 BS.2088\footnote{\url{https://www.itu.int/rec/R-REC-BS.2088/}}.
 The \texttt{<chna>} chunk is used
 to associate the track ID used in the XML description
@@ -525,13 +525,12 @@ This means that at the beginning of a block
 the previous block's value is still used
 and the value specified for the current block
 is only reached at the end of the block.
-This also means that the first block
-has to be assumed to have a constant value.
-The ADM specification officially recommends
-using a zero-length first block as a work-around for this limitation.
-Alternatively, the \texttt{jumpPosition} flag
-can be used to apply the given value as a constant to the whole block.
-The interpolation can also be limited to a shorter time than the block duration
+This also means that the very first block
+has an undefined value.
+In this case, the ADM specification recommends
+setting the \texttt{jumpPosition} flag,
+which applies the given value as a constant to the whole block.
+Interpolations can also be limited to a shorter time than the block duration
 with the \texttt{interpolationLength} value (in seconds),
 but this is discouraged by the specification.
 Since the ADM specification doesn't mention any further details
